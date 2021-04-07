@@ -22,17 +22,29 @@ def getChoice(options: list):
     clearScene()
     return choice
 
-def showDesc(description: str):
+def showDesc(description: str, timeSet: float = 0.05):
     show = ""
-    for string in description:
-        clearScene()
-        show += string
-        print(show)
-        time.sleep(0.1)
+    timer = int(timeSet*1000)
+    if timer != 0:
+        timer = 0.001 if timeSet < 0.001 else timeSet
+        for string in description:
+            clearScene()
+            show += string
+            print(show)
+            time.sleep(timer)
+    else:
+        print(description)
+
+#def showDesc(description: str):
+#    for string in description:
+#        ended = '' if description.index(string) != len(description)-1 else "\n"
+#        print(string, end='')
+#        time.sleep(0.1)
 
 def showWrongOption():
     print('Not a smart option..')
     input(':enter')
+    clearScene()
 
 #start
 #為了使用者名字，因此得先初始化
@@ -128,7 +140,11 @@ nowScene = 'forward'
 
 #game choice
 while nowScene != 'GetOut':
-    showDesc(scene.get(nowScene).get('description'))
+    if scene.get(nowScene).get('readed'):
+        showDesc(scene.get(nowScene).get('description'), 0)
+    else:
+        showDesc(scene.get(nowScene).get('description'))
+        scene.get(nowScene)['readed'] = True
     if nowScene == 'lockInput':
         lockpw = input(': ')
     else:
@@ -158,8 +174,16 @@ while nowScene != 'GetOut':
     elif nowScene == 'drawer':
         if choice == '1' or choice == '2':
             nowScene = 'forward'
+            scene.get('drawer')['hiddenCondition'] = choice+' '
         else:
             showWrongOption()
+        
+        #hiddenCondition judge
+        if not scene.get('drawer').get('hiddenCondition'):
+            hiddenCondition = scene.get('drawer').get('hiddenCondition').split()
+            if len(hiddenCondition) > 2:
+                if hiddenCondition[-2:len(hiddenCondition)] == ['1', '2']:
+                    pass
     
     #lefthand scene options
     elif nowScene == 'lefthand':
