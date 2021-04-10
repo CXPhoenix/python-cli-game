@@ -22,17 +22,29 @@ def getChoice(options: list):
     clearScene()
     return choice
 
-def showDesc(description: str):
+def showDesc(description: str, timeSet: float = 0.05):
     show = ""
-    for string in description:
-        clearScene()
-        show += string
-        print(show)
-        time.sleep(0.1)
+    timer = int(timeSet*1000)
+    if timer != 0:
+        timer = 0.001 if timeSet < 0.001 else timeSet
+        for string in description:
+            clearScene()
+            show += string
+            print(show)
+            time.sleep(timer)
+    else:
+        print(description)
+
+#def showDesc(description: str):
+#    for string in description:
+#        ended = '' if description.index(string) != len(description)-1 else "\n"
+#        print(string, end='')
+#        time.sleep(0.1)
 
 def showWrongOption():
     print('Not a smart option..')
     input(':enter')
+    clearScene()
 
 #start
 #為了使用者名字，因此得先初始化
@@ -78,6 +90,11 @@ scene = {
     'drawer': {
         'description': "打開抽屜後，空無一物，空氣中瀰漫著嘲笑你的聲音",
         'options': "平靜地關閉抽屜 憤怒地關上抽屜".split(),
+    },
+
+    'tableText': {
+        'description': "信是長安得，\n中常聞到路。\n有黃金丹青，\n密宰相憶故，\n碼絃駿馬蹄。",
+        'options': "查看完畢".split()
     },
 
     #lefthand scene
@@ -128,7 +145,11 @@ nowScene = 'forward'
 
 #game choice
 while nowScene != 'GetOut':
-    showDesc(scene.get(nowScene).get('description'))
+    if scene.get(nowScene).get('readed') or nowScene == 'mail':
+        showDesc(scene.get(nowScene).get('description'), 0)
+    else:
+        showDesc(scene.get(nowScene).get('description'))
+        scene.get(nowScene)['readed'] = True
     if nowScene == 'lockInput':
         lockpw = input(': ')
     else:
@@ -144,6 +165,8 @@ while nowScene != 'GetOut':
             nowScene = 'lefthand'
         elif choice == '4':
             nowScene = 'righthand'
+        elif choice == '5' and len(scene.get('forward').get('options')) >= 5:
+            nowScene = 'tableText'
         else:
             showWrongOption()
     
@@ -158,8 +181,26 @@ while nowScene != 'GetOut':
     elif nowScene == 'drawer':
         if choice == '1' or choice == '2':
             nowScene = 'forward'
+            scene.get('drawer')['hiddenCondition'] = scene.get('drawer').get('hiddenCondition') + choice + ' ' if scene.get('drawer').get('hiddenCondition') else choice + ' '
+        elif choice == 'show':
+            print(scene.get('drawer').get('hiddenCondition'))
         else:
             showWrongOption()
+        
+        #hiddenCondition judge
+        if scene.get('drawer').get('hiddenCondition'):
+            hiddenCondition = scene.get('drawer').get('hiddenCondition').split()
+            if len(hiddenCondition) >= 2:
+                if hiddenCondition[-2:len(hiddenCondition)] == ['1', '2']:
+                    scene.get('forward')['description'] = "一張桌子，上面放著一張紙條，似乎還有一個抽屜\n桌子上好像有一段模糊的文字顯示出來..." 
+                    scene.get('forward')['options'] = "查看信 查看抽屜 向左轉 向右轉 查看桌上顯示的字".split()
+    
+    elif nowScene == 'tableText':
+        if choice == '1':
+            nowScene = 'forward'
+        else:
+            showWrongOption()
+
     
     #lefthand scene options
     elif nowScene == 'lefthand':
@@ -202,15 +243,18 @@ while nowScene != 'GetOut':
     #lockInput scene options
     elif nowScene == 'lockInput':
         if len(lockpw) != 6:
+            clearScene()
             print('Not good passwords..')
             input(':enter')
             nowScene = 'lock'
         elif lockpw == '487919':
             nowScene = 'GetOut'
         else:
+            clearScene()
             print('wrong passwords..')
             input(':enter')
             nowScene = 'lock'
+        clearScene()
 
 #end scene
 for s in endScene:
