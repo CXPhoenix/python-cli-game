@@ -97,9 +97,16 @@ class TextGame:
     def getSceneOptionAction(self, sceneName: str, option: str) -> str:
         return self.scene.get(sceneName).get('actions', lambda: [_ for _ in ()].throw(Exception(f"The scene {sceneName} no actions detail.."))).get(option)
     
-    def showScene(self, sceneName: str, timer: int=100) -> None:
+    def showScene(self, sceneName: str) -> None:
         sceneDesc = self.scene.get(sceneName).get('description')
         sceneOptions = self.scene.get(sceneName).get('options')
+        if self.scene.get(sceneName).get('readed'):
+            TextGame.showString(sceneDesc, 0)
+        else:
+            TextGame.showString(sceneDesc)
+        option = TextGame.userInputOptions(sceneOptions)
+        
+        
         
     
     """ about screen """
@@ -113,9 +120,33 @@ class TextGame:
             raise Exception('This game just support Windows and MacOS system..')
     
     @staticmethod
-    def screenWait(milisecond: int=100):
+    def screenWait(milisecond: int=100) -> None:
         time.sleep(milisecond*0.001)
     
+    @staticmethod
+    def showString(string: str, timer: int= 50) -> None:
+        s = ''
+        if timer > 0:
+            timer = timer*0.001
+            for ss in string:
+                TextGame.clearScreen()
+                s += ss
+                print(s)
+                time.sleep(timer)
+        else:
+            TextGame.clearScreen()
+            print(string)
+    
+    @staticmethod
+    def userInputOptions(options: list) -> str:
+        for value, option in enumerate(options, start=1):
+            print(f"{value}. {option}")
+        try:
+            choose = input(": ")
+            return options[int(choose)]
+        except (IndexError, ValueError):
+            return choose
+
     """ about player"""
     def setPlayerName(self, playerName: str) -> None:
         self.playerName = playerName
