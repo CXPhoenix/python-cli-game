@@ -17,3 +17,7 @@ tg = TextGame(name)
 startScene = ""
 
 #遊戲過程場景
+tg.setScene('front',
+           'test',
+            ['test1','test2','test3'],
+           ['1','2'])

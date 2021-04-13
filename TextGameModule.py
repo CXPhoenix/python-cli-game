@@ -97,6 +97,11 @@ class TextGame:
     def getSceneOptionAction(self, sceneName: str, option: str) -> str:
         return self.scene.get(sceneName).get('actions', lambda: [_ for _ in ()].throw(Exception(f"The scene {sceneName} no actions detail.."))).get(option)
     
+    def showScene(self, sceneName: str, timer: int=100) -> None:
+        sceneDesc = self.scene.get(sceneName).get('description')
+        sceneOptions = self.scene.get(sceneName).get('options')
+        
+    
     """ about screen """
     @staticmethod
     def clearScreen() -> None:
