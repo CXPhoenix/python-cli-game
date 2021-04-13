@@ -21,7 +21,20 @@ class TextGame:
         else:
             raise Exception('This game just support Windows and MacOS system..')
     
-    """ about scene"""
+    """ about scene
+        Scene's format:
+        scene = {
+            sceneName:{
+                description -> str,
+                options -> str-list,
+                hiddenCondition -> list,
+                actions -> dict : {
+                    option -> str : go_to_scene -> str
+                }
+            },
+            ...
+        }
+    """
     def setScene(self, sceneName: str, description: str, options: list, hiddenCondition: list=[]) -> None:
         self.scene[sceneName] = {
             'description': description,
@@ -38,6 +51,7 @@ class TextGame:
                 'hiddenCondition': ms.get('hiddenCondition',[]),
                 'actions': ms.get('actions',{}),
             }
+            
     def setMultiScenesByDict(self, multiScene: dict) -> None:
         self.scene.update(multiScene)
     
@@ -56,8 +70,8 @@ class TextGame:
             if fs.get('sceneName'):
                 scene.update({
                     fs.get('sceneName'):{
-                        'desciption': fs.get('description'),
-                        'options': fs.get('options'),
+                        'desciption': fs.get('description', ''),
+                        'options': fs.get('options', []),
                         'hiddenCondition': fs.get('hiddenCondition', []),
                         'actions': fs.get('actions', {}),
                     }
@@ -79,6 +93,9 @@ class TextGame:
     
     def getSceneOptions(self, sceneName: str) -> list:
         return self.scene.get(sceneName).get('options')
+    
+    def getSceneOptionAction(self, sceneName: str, option: str) -> str:
+        return self.scene.get(sceneName).get('actions', lambda: [_ for _ in ()].throw(Exception(f"The scene {sceneName} no actions detail.."))).get(option)
     
     """ about screen """
     def clearScreen(self) -> None:

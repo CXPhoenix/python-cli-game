@@ -15,8 +15,8 @@ def getChoice(options: list):
     """
     
     print("操作選項")
-    for i in range(len(options)):
-        print(f"{i+1}. {options[i]}")
+    for i, option in enumerate(options, start=1):
+        print(f"{i}. {option}")
     choice = input(': ')
     clearScene()
     return choice
@@ -40,7 +40,7 @@ def showDesc(description: str, timeSet: float = 0.05):
             clearScene()
             show += string
             print(show)
-            time.sleep(timer)
+            # time.sleep(timer)
     else:
         print(description)
 
@@ -63,7 +63,7 @@ name = input('請輸入你的名字： ')
 for i in range(3):
     clearScene()
     print(f"Hello，{name}\n遊戲即將開始{'.'*(i+1)}!")
-    time.sleep(1)
+    # time.sleep(1)
 clearScene()
 
 
