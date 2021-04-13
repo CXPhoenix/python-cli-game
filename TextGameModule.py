@@ -98,8 +98,18 @@ class TextGame:
         return self.scene.get(sceneName).get('actions', lambda: [_ for _ in ()].throw(Exception(f"The scene {sceneName} no actions detail.."))).get(option)
     
     """ about screen """
-    def clearScreen(self) -> None:
-        os.system(self.clearCmd)
+    @staticmethod
+    def clearScreen() -> None:
+        if sys.platform.startswith('win32'):
+            os.system('cls')
+        elif sys.platform.startswith('darwin'):
+            os.system('clear')
+        else:
+            raise Exception('This game just support Windows and MacOS system..')
+    
+    @staticmethod
+    def screenWait(milisecond: int=100):
+        time.sleep(milisecond*0.001)
     
     """ about player"""
     def setPlayerName(self, playerName: str) -> None:
