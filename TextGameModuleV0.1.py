@@ -11,7 +11,6 @@ class TextGame:
         self.playerName = playerName
         self.scene = {}
         self.clearCmd = ''
-        self.playerRecord = {}
 
         # detect system
         if sys.platform.startswith('win32'):
@@ -35,7 +34,8 @@ class TextGame:
             ...
         }
     """
-    def setScene(self, sceneName: str, description: str, options: list, hiddenCondition: list=[]) -> None:
+
+    def setScene(self, sceneName: str, description: str, options: list, hiddenCondition: list = [], actions: dict = {}) -> None:
         self.scene[sceneName] = {
             'description': description,
             'options': options,
@@ -54,11 +54,13 @@ class TextGame:
         else:
             return True
         
+    def compareHiddenCondition(self, sceneName: str, actionRecords: list) -> bool:
+        hc = self.scene.get(sceneName).get("hiddenCondition")
+        if len(actionRecords) >= len(hc):
+            return hc == list(reversed(actionRecords[-1:-1-len(hc):-1]))
 
-
-    def setSceneByDict(self, scene: dict) -> None:
-        
-        self.scene[scene.get(sceneName)]
+    # def setSceneByDict(self, scene: dict) -> None:
+    #     self.scene[scene.get(sceneName)]
 
     def getFormatScene(self, sceneName: str, description: str, options: list, hiddenCondition: list=[], actions: dict={}) -> dict:
         return {
